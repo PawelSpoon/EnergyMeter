@@ -35,8 +35,69 @@ you should see it now in your home network as raspberrypi
  - type in ssid and password, store reboot done
 
 now it is time to follow the link: (as some of the raspi parts were outdated..)
-
 https://simonhearne.com/2020/pi-influx-grafana/
+
+sudo apt update
+sudo apt upgrade -y
+
+# Influx
+
+wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+source /etc/os-release
+echo "deb https://repos.influxdata.com/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
+sudo apt update && sudo apt install -y influxdb
+
+sudo systemctl unmask influxdb.service
+sudo systemctl start influxdb
+sudo systemctl enable influxdb.service
+
+run influx client:
+influx 
+
+and there then:
+
+create database home
+use home
+
+create user grafana with password '<passwordhere>' with all privileges
+grant all privileges on home to grafana
+
+show users
+ should return something like this:
+
+user admin
+---- -----
+grafana true
+
+# Grafana
+
+wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+
+sudo apt update && sudo apt install -y grafana
+
+sudo systemctl unmask grafana-server.service
+sudo systemctl start grafana-server
+sudo systemctl enable grafana-server.service
+
+# Node-red
+
+# Mosquitto
+
+sudo apt install -y mosquitto mosquitto-clients
+
+sudo systemctl enable mosquitto.service
+
+test
+mosquitto -v
+
+sudo nano /etc/mosquitto/mosquitto.conf
+
+and add this to end of file:
+listener 1883
+allow_anonymous true
+
 
 
 
