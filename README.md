@@ -81,9 +81,8 @@ sudo systemctl unmask grafana-server.service
 sudo systemctl start grafana-server
 sudo systemctl enable grafana-server.service
 
-# Node-red
-
 # Mosquitto
+https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/
 
 sudo apt install -y mosquitto mosquitto-clients
 
@@ -94,12 +93,42 @@ mosquitto -v
 
 sudo nano /etc/mosquitto/mosquitto.conf
 
-and add this to end of file:
+and add this to end of file for anonymous access:
 listener 1883
 allow_anonymous true
 
+for user/pwd:
+sudo mosquitto_passwd -c /etc/mosquitto/passwd <user>
+then type-in the password
+
+sudo nano /etc/mosquitto/mosquitto.conf
+at the top of file !
+per_listener_settings true
+
+and at the bottom:
+allow_anonymous false 
+listener 1883  
+password_file /etc/mosquitto/passwd
+
+then restart
+sudo systemctl restart mosquitto
+check status
+sudo systemctl status mosquitto
+
+message looked good
+then i did try to connect with mqtt-explorer and did succeed
+
+# Node-red
+https://www.raspberry-pi-geek.de/ausgaben/rpg/2019/02/node-red-auf-dem-raspberry-pi/
+https://nodered.org/docs/getting-started/raspberrypi
+download and execute script:
+
+$ bash <(curl -sL https://raw.githubusercontent.com/node-red/raspbian-deb-package/master/resources/update-nodejs-and-nodered)
 
 
+
+autostart on boot:
+sudo systemctl enable nodered.service
 
 
 
