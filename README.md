@@ -123,9 +123,11 @@ https://www.raspberry-pi-geek.de/ausgaben/rpg/2019/02/node-red-auf-dem-raspberry
 https://nodered.org/docs/getting-started/raspberrypi
 download and execute script:
 
-$ bash <(curl -sL https://raw.githubusercontent.com/node-red/raspbian-deb-package/master/resources/update-nodejs-and-nodered)
+first install the build essentials 1
 
+  bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
 
+and i did immediately configure it with user, pwd and all
 
 autostart on boot:
 sudo systemctl enable nodered.service
