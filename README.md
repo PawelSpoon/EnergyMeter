@@ -28,7 +28,8 @@ you should see it now in your home network as raspberrypi
  - Wlan country
  - select yours and store
 - on next ssh connection the issue is gone
-- now setup wireless, again sudo raspi-config
+- now setup wireless as per https://raspberrytips.com/raspberry-pi-wifi-setup/
+ - again sudo raspi-config
  - system settings
  - wireless lan
  - type in ssid and password, store reboot done
@@ -36,6 +37,7 @@ you should see it now in your home network as raspberrypi
 now it is time to follow the link: (as some of the raspi parts were outdated..)
 
 https://simonhearne.com/2020/pi-influx-grafana/
+
 
 
 
