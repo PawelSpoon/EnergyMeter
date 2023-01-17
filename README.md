@@ -60,6 +60,8 @@ and there then:
 create database home
 use home
 
+CREATE RETENTION POLICY "two_years" ON "home" DURATION 104w REPLICATION 1
+
 create user grafana with password '<passwordhere>' with all privileges
 grant all privileges on home to grafana
 
@@ -132,5 +134,11 @@ and i did immediately configure it with user, pwd and all
 autostart on boot:
 sudo systemctl enable nodered.service
 
+create database <DATENBANKNAME>   
+zb. tarija
+
+show databases
+use tarija
+show measurements
 
 
