@@ -1,0 +1,473 @@
+[
+    {
+        "id": "821ed147.a04a9",
+        "type": "tab",
+        "label": "Energymeter",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "479cd448f28a5801",
+        "type": "mqtt in",
+        "z": "821ed147.a04a9",
+        "name": "meter-#",
+        "topic": "shellies/shelly-3em/emeter/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "18f74338210a8997",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 160,
+        "wires": [
+            [
+                "60911437cbbc2abd"
+            ]
+        ]
+    },
+    {
+        "id": "f4e56f87979cedb6",
+        "type": "join",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "key",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "14",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "1176ca3030f6d188"
+            ]
+        ]
+    },
+    {
+        "id": "a51dfa607c95f6f9",
+        "type": "debug",
+        "z": "821ed147.a04a9",
+        "name": "debug 4",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "60911437cbbc2abd",
+        "type": "function",
+        "z": "821ed147.a04a9",
+        "name": "extract topic and value",
+        "func": "if (msg.topic.split(\"/\")[4] !== undefined) {\n    msg.key = msg.topic.split(\"/\")[3] + \"_\" + msg.topic.split(\"/\")[4]\n    msg.payload = Number(msg.payload)\n    return msg;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 160,
+        "wires": [
+            [
+                "f4e56f87979cedb6"
+            ]
+        ]
+    },
+    {
+        "id": "1176ca3030f6d188",
+        "type": "change",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Meter",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 240,
+        "wires": [
+            [
+                "a51dfa607c95f6f9",
+                "ded7fe04c4d1c578"
+            ]
+        ]
+    },
+    {
+        "id": "527e29fc29a620c3",
+        "type": "mqtt in",
+        "z": "821ed147.a04a9",
+        "name": "inverter-total",
+        "topic": "inverter/total/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "18f74338210a8997",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 380,
+        "wires": [
+            [
+                "d92a1738f1fe8a01"
+            ]
+        ]
+    },
+    {
+        "id": "ab812c0ef60cb794",
+        "type": "join",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "key",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "4",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 310,
+        "y": 460,
+        "wires": [
+            [
+                "1703ad4478824073"
+            ]
+        ]
+    },
+    {
+        "id": "3c4299b0ba81b943",
+        "type": "debug",
+        "z": "821ed147.a04a9",
+        "name": "debug 6",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d92a1738f1fe8a01",
+        "type": "function",
+        "z": "821ed147.a04a9",
+        "name": "extract topic and value",
+        "func": "if (msg.topic.split(\"/\")[1] === \"total\") {\n    msg.key = msg.topic.split(\"/\")[1] + \"_\" + msg.topic.split(\"/\")[2]\n    msg.payload = Number(msg.payload)\n    return msg;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 380,
+        "wires": [
+            [
+                "ab812c0ef60cb794"
+            ]
+        ]
+    },
+    {
+        "id": "1703ad4478824073",
+        "type": "change",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Meter",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 450,
+        "y": 460,
+        "wires": [
+            [
+                "3c6e1303e6d1e4f6"
+            ]
+        ]
+    },
+    {
+        "id": "9a9ab1debec2de52",
+        "type": "comment",
+        "z": "821ed147.a04a9",
+        "name": "shelly-3em meter",
+        "info": "",
+        "x": 100,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "d38b85a0646c13f1",
+        "type": "comment",
+        "z": "821ed147.a04a9",
+        "name": "inverter total",
+        "info": "",
+        "x": 90,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ccaab80dac0dc2ed",
+        "type": "comment",
+        "z": "821ed147.a04a9",
+        "name": "hm 1500 total",
+        "info": "",
+        "x": 90,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "65c5d84d15c601f6",
+        "type": "mqtt in",
+        "z": "821ed147.a04a9",
+        "name": "inverter-hm-1500",
+        "topic": "inverter/hm-1500/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "18f74338210a8997",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 100,
+        "y": 580,
+        "wires": [
+            [
+                "cf89d259f210c3c7"
+            ]
+        ]
+    },
+    {
+        "id": "bb3f6931b6c6db3b",
+        "type": "join",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "key",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "4",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 270,
+        "y": 640,
+        "wires": [
+            [
+                "fe9d77a501dd1472"
+            ]
+        ]
+    },
+    {
+        "id": "aa138a8164bc6b79",
+        "type": "debug",
+        "z": "821ed147.a04a9",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "cf89d259f210c3c7",
+        "type": "function",
+        "z": "821ed147.a04a9",
+        "name": "extract hm-1500 total values",
+        "func": "if (msg.topic.split(\"/\")[1] === \"hm-1500\") {\n    if (msg.topic.split(\"/\")[2] === \"ch0\") {\n    msg.key = msg.topic.split(\"/\")[1] + \"_total_\" + msg.topic.split(\"/\")[3]\n    msg.payload = Number(msg.payload)\n    return msg;\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 580,
+        "wires": [
+            [
+                "bb3f6931b6c6db3b",
+                "3c4299b0ba81b943"
+            ]
+        ]
+    },
+    {
+        "id": "fe9d77a501dd1472",
+        "type": "change",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Meter",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 450,
+        "y": 640,
+        "wires": [
+            [
+                "aa138a8164bc6b79",
+                "712e7e82b282a703"
+            ]
+        ]
+    },
+    {
+        "id": "ded7fe04c4d1c578",
+        "type": "influxdb out",
+        "z": "821ed147.a04a9",
+        "influxdb": "6ae25ec4e9f142ec",
+        "name": "meter",
+        "measurement": "meter",
+        "precision": "s",
+        "retentionPolicy": "two_years",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 590,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "3c6e1303e6d1e4f6",
+        "type": "influxdb out",
+        "z": "821ed147.a04a9",
+        "influxdb": "6ae25ec4e9f142ec",
+        "name": "pv",
+        "measurement": "pv",
+        "precision": "s",
+        "retentionPolicy": "two_years",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 610,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "712e7e82b282a703",
+        "type": "influxdb out",
+        "z": "821ed147.a04a9",
+        "influxdb": "6ae25ec4e9f142ec",
+        "name": "pv",
+        "measurement": "pv",
+        "precision": "s",
+        "retentionPolicy": "two_years",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 630,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "18f74338210a8997",
+        "type": "mqtt-broker",
+        "name": "local",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "6ae25ec4e9f142ec",
+        "type": "influxdb",
+        "hostname": "localhost",
+        "port": "8086",
+        "protocol": "http",
+        "database": "home",
+        "name": "influx-home",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    }
+]

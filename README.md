@@ -142,3 +142,17 @@ use tarija
 show measurements
 
 
+
+
+SELECT (max("hm-1500_total_P_AC")) - (min("hm-1500_total_P_AC")) FROM "two_years"."pv"   WHERE $timeFilter GROUP BY time(24hr) fill(null)
+
+SELECT ("hm-1500_total_P_AC") FROM "two_years"."pv"   WHERE $timeFilter GROUP BY time(24hr) fill(null)
+
+SELECT mean("hm-1500_total_P_AC") * $__interval FROM "two_years"."pv"   WHERE $timeFilter GROUP BY time($__interval) fill(previous)
+
+works:
+SELECT cumulative_sum(integral("hm-1500_total_P_AC"))/3600 FROM "two_years"."pv" WHERE $timeFilter GROUP BY time($__interval) fill(previous)
+
+SELECT cumulative_sum(integral("hm-1500_total_P_AC"))/3600, cumulative_sum(integral("total_P_AC"))/3600     FROM "two_years"."meter" WHERE $timeFilter GROUP BY time($__interval) fill(null)
+
+select cumulative_sum(integral(mean("0_power") + mean("1_power") + mean("2_power"))) AS TOTAL FROM "two_years"."meter" 
