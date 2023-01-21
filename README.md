@@ -1,5 +1,16 @@
 # EnergyMeter
-config files for ahoy-dtu, shelley-3em, grafana dashboards
+home consumption and pv production dashboard using:
+data provider:
+- ahoy-dtu
+- shelly-3em
+analysis:
+- mosquitto
+- node-red
+- influx (1.8)
+- grafana
+
+the whole thing can run everywhere, i did try it out on ubuntu with docker containers
+and finally install it on an raspberrypi 3b
 
 # Raspberry
 my model: raspberry pie 3b
@@ -60,7 +71,9 @@ and there then:
 create database home
 use home
 
-CREATE RETENTION POLICY "two_years" ON "home" DURATION 104w REPLICATION 1
+due to memory limitations i did resize two years to one month.
+CREATE RETENTION POLICY "two_years" ON "home" DURATION 8w REPLICATION 1
+CREATE RETENTION POLICY "ten_years" ON "home" DURATION 560d REPLICATION 1
 
 create user grafana with password '<passwordhere>' with all privileges
 grant all privileges on home to grafana
@@ -134,25 +147,11 @@ and i did immediately configure it with user, pwd and all
 autostart on boot:
 sudo systemctl enable nodered.service
 
-create database <DATENBANKNAME>   
-zb. tarija
+create database <DATABASENAME>   
+e.g. home
 
 show databases
-use tarija
+use home
 show measurements
 
-
-
-
-SELECT (max("hm-1500_total_P_AC")) - (min("hm-1500_total_P_AC")) FROM "two_years"."pv"   WHERE $timeFilter GROUP BY time(24hr) fill(null)
-
-SELECT ("hm-1500_total_P_AC") FROM "two_years"."pv"   WHERE $timeFilter GROUP BY time(24hr) fill(null)
-
-SELECT mean("hm-1500_total_P_AC") * $__interval FROM "two_years"."pv"   WHERE $timeFilter GROUP BY time($__interval) fill(previous)
-
-works:
-SELECT cumulative_sum(integral("hm-1500_total_P_AC"))/3600 FROM "two_years"."pv" WHERE $timeFilter GROUP BY time($__interval) fill(previous)
-
-SELECT cumulative_sum(integral("hm-1500_total_P_AC"))/3600, cumulative_sum(integral("total_P_AC"))/3600     FROM "two_years"."meter" WHERE $timeFilter GROUP BY time($__interval) fill(null)
-
-select cumulative_sum(integral(mean("0_power") + mean("1_power") + mean("2_power"))) AS TOTAL FROM "two_years"."meter" 
+influx creates measurements during the first install
