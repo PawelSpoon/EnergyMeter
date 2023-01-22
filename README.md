@@ -12,6 +12,8 @@ analysis:
 the whole thing can run everywhere, i did try it out on ubuntu with docker containers
 and finally install it on an raspberrypi 3b
 
+for ahoy-dtu: https://github.com/lumapu/ahoy (communication did not work with esp32, using now ESP8266)
+
 # Raspberry
 my model: raspberry pie 3b
 

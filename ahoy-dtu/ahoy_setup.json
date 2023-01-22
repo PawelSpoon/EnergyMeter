@@ -1,1 +1,132 @@
-{"menu":{"name":["Live","Serial Console","Settings","-","REST API","-","Update","System"],"link":["/live","/serial","/setup",null,"/api",null,"/update","/system"],"trgt":[null,null,null,null,"_blank"]},"system":{"ssid":"Tarija","device_name":"AHOY-DTU","version":"0.5.41","build":"dec333f","ts_uptime":283851,"ts_now":1674306998,"ts_sunrise":1674282477,"ts_sunset":1674316391,"ts_sun_upd":1674255600,"wifi_rssi":-87,"mac":"C8:C9:A3:5B:BC:19","hostname":"AHOY-DTU","pwd_set":false,"sdk":"2.2.2-dev(38a443e)","cpu_freq":80,"heap_free":7728,"sketch_total":2662400,"sketch_used":468,"core_version":"3.0.2","flash_size":4096,"heap_frag":4,"max_free_blk":7424,"reboot_reason":"Power On","esp_type":"ESP8266"},"inverter":{"inverter":[{"id":0,"name":"hm-1500","serial":"116181856179","channels":4,"version":"10018","ch_max_power":[300,300,300,300],"ch_name":["","","",""]},{"id":1,"name":"Erwin","serial":"114183143252","channels":2,"version":"10010","ch_max_power":[300,300],"ch_name":["",""]}],"interval":"30","retries":"5","max_num_inverters":10},"mqtt":{"broker":"192.168.178.64","port":"1883","user":"mosque","pwd":"{PWD}","topic":"inverter"},"ntp":{"addr":"2.europe.pool.ntp.org","port":"123"},"sun":{"lat":"47.09900","lon":"15.39200","disnightcom":true},"pinout":{"cs":15,"ce":2,"irq":0,"led0":255,"led1":255},"radio":{"power_level":3},"serial":{"interval":5,"show_live_data":false,"debug":false},"static_ip":{}}
+{
+	"menu": {
+		"name": [
+			"Live",
+			"Serial Console",
+			"Settings",
+			"-",
+			"REST API",
+			"-",
+			"Update",
+			"System"
+		],
+		"link": [
+			"/live",
+			"/serial",
+			"/setup",
+			null,
+			"/api",
+			null,
+			"/update",
+			"/system"
+		],
+		"trgt": [
+			null,
+			null,
+			null,
+			null,
+			"_blank"
+		]
+	},
+	"system": {
+		"ssid": "{SSID}",
+		"device_name": "AHOY-DTU",
+		"version": "0.5.41",
+		"build": "dec333f",
+		"ts_uptime": 283851,
+		"ts_now": 1674306998,
+		"ts_sunrise": 1674282477,
+		"ts_sunset": 1674316391,
+		"ts_sun_upd": 1674255600,
+		"wifi_rssi": -87,
+		"mac": "{MAC}",
+		"hostname": "AHOY-DTU",
+		"pwd_set": false,
+		"sdk": "2.2.2-dev(38a443e)",
+		"cpu_freq": 80,
+		"heap_free": 7728,
+		"sketch_total": 2662400,
+		"sketch_used": 468,
+		"core_version": "3.0.2",
+		"flash_size": 4096,
+		"heap_frag": 4,
+		"max_free_blk": 7424,
+		"reboot_reason": "Power On",
+		"esp_type": "ESP8266"
+	},
+	"inverter": {
+		"inverter": [
+			{
+				"id": 0,
+				"name": "hm-1500",
+				"serial": "{SERIAL}",
+				"channels": 4,
+				"version": "10018",
+				"ch_max_power": [
+					300,
+					300,
+					300,
+					300
+				],
+				"ch_name": [
+					"",
+					"",
+					"",
+					""
+				]
+			},
+			{
+				"id": 1,
+				"name": "Erwin",
+				"serial": "{SERIAL}",
+				"channels": 2,
+				"version": "10010",
+				"ch_max_power": [
+					300,
+					300
+				],
+				"ch_name": [
+					"",
+					""
+				]
+			}
+		],
+		"interval": "30",
+		"retries": "5",
+		"max_num_inverters": 10
+	},
+	"mqtt": {
+		"broker": "192.168.178.64",
+		"port": "1883",
+		"user": "mosque",
+		"pwd": "{PWD}",
+		"topic": "inverter"
+	},
+	"ntp": {
+		"addr": "2.europe.pool.ntp.org",
+		"port": "123"
+	},
+	"sun": {
+		"lat": "47.09900",
+		"lon": "15.39200",
+		"disnightcom": true
+	},
+	"pinout": {
+		"cs": 15,
+		"ce": 2,
+		"irq": 0,
+		"led0": 255,
+		"led1": 255
+	},
+	"radio": {
+		"power_level": 3
+	},
+	"serial": {
+		"interval": 5,
+		"show_live_data": false,
+		"debug": false
+	},
+	"static_ip": {
+
+	}
+}
