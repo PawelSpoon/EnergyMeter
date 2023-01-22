@@ -1,8 +1,10 @@
 # EnergyMeter
 home consumption and pv production dashboard using:
+
 data provider:
 - ahoy-dtu
 - shelly-3em
+
 analysis:
 - mosquitto
 - node-red
