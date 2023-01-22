@@ -157,3 +157,9 @@ use home
 show measurements
 
 influx creates measurements during the first install
+
+# ports
+mosquitto: 1883
+node-red: 1880
+influx: 8086
+grafana: 3000
