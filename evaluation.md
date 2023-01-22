@@ -69,6 +69,9 @@ CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B"
 ### daily has already to integrate ! 
 CREATE CONTINUOUS QUERY "daily" ON "home" BEGIN SELECT integral("TOTAL")/3600 AS TOTAL, integral("PV_TOTAL")/3600 AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."daily" FROM "ten_years"."tenminwise" GROUP BY time(1d) END
 
+### weekly evaluation
+CREATE CONTINUOUS QUERY "weekly" ON "home" BEGIN SELECT * INTO "ten_years"."weekly" FROM "ten_years"."daily" GROUP BY time(1w) END
+
 ### monthly
 1M does not work, have to fake it using 730hrs
 365/12=30.41days => 730hrs with schaltjahr it would be 730,5 which again does not work but..
