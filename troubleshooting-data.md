@@ -34,3 +34,14 @@ now how to calculate the timestamp
 i store my data at 1 am: this is the timestamp for 3.2.2023: 1675382400000000000
 to add a day add: 24*60*60  * 1000 000 000 (the billion is needed as it is stored in nano seconds or something)
 
+these curl calls might work too, but you need to make sure you do define retention as rp and the string has the same issues as the insert.
+so you might end up having multiple calls here
+
+curl -i -XPOST "http://192.168.178.64:8086/write?db=home&rp=two_years" --data-binary 'daily PV_YIELD_DAY=1500 1675382400000000000'
+
+curl -i -XPOST "http://192.168.178.64:8086/write?db=home&rp=two_years" --data-binary 'daily,PV_YIELD_DAY=1500 1675382400000000000'
+
+oh yes, when having tags no spaces !!
+daily,tag=value,tag2=value timestamp
+cause a space indicates a field
+daily field=value timestamp
