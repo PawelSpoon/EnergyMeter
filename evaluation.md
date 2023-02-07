@@ -64,13 +64,14 @@ CREATE RETENTION POLICY two_years ON home DURATION 30d REPLICATION 1
 ## continous queries
 CREATE CONTINUOUS QUERY "tenminwise" ON "home" BEGIN SELECT mean("0_power") AS A , mean("1_power") AS B, mean("2_power") AS C,  mean("0_power") + mean("1_power") + mean("2_power") AS TOTAL, mean("total_P_AC") as PV_TOTAL, max(total_YieldDay) AS PV_YIELD_DAY, max("total_YieldTotal") AS PV_YIELD_TOTAL INTO "ten_years"."tenminwise" FROM "two_years"."meter", "two_years"."pv" GROUP BY time(10m) END
 
+### the hourly value seems to be not that exact, when one compares the raw data with the mean
 CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B") AS B, mean("C") as C, mean("TOTAL") as TOTAL, mean("PV_TOTAL") AS PV_TOTAL, mean("TOTAL") - mean("PV_TOTAL") AS DIFF, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."hourly" FROM "ten_years"."tenminwise" GROUP BY time(1h) fill(0) END
 
 ### daily has already to integrate ! 
 CREATE CONTINUOUS QUERY "daily" ON "home" BEGIN SELECT integral("TOTAL")/3600 AS TOTAL, integral("PV_TOTAL")/3600 AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."daily" FROM "ten_years"."tenminwise" GROUP BY time(1d) END
 
 ### weekly evaluation
-CREATE CONTINUOUS QUERY "weekly" ON "home" BEGIN SELECT * INTO "ten_years"."weekly" FROM "ten_years"."daily" GROUP BY time(1w) END
+CREATE CONTINUOUS QUERY "weekly" ON "home" BEGIN SELECT mean(*) INTO "ten_years"."weekly" FROM "ten_years"."daily" GROUP BY time(1w) END
 
 ### monthly
 1M does not work, have to fake it using 730hrs
