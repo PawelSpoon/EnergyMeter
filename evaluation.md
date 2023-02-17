@@ -67,6 +67,12 @@ CREATE CONTINUOUS QUERY "tenminwise" ON "home" BEGIN SELECT mean("0_power") AS A
 ### the hourly value seems to be not that exact, when one compares the raw data with the mean
 CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B") AS B, mean("C") as C, mean("TOTAL") as TOTAL, mean("PV_TOTAL") AS PV_TOTAL, mean("TOTAL") - mean("PV_TOTAL") AS DIFF, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."hourly" FROM "ten_years"."tenminwise" GROUP BY time(1h) fill(0) END
 
+The DIFF value is obviously a nonsense, TOTAL contains already the produced energy and can even become negative
+Without DIFF: 
+
+CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B") AS B, mean("C") as C, mean("TOTAL") as TOTAL, mean("PV_TOTAL") AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."hourly" FROM "ten_years"."tenminwise" GROUP BY time(1h) fill(0) END
+
+
 ### daily has already to integrate ! 
 CREATE CONTINUOUS QUERY "daily" ON "home" BEGIN SELECT integral("TOTAL")/3600 AS TOTAL, integral("PV_TOTAL")/3600 AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."daily" FROM "ten_years"."tenminwise" GROUP BY time(1d) END
 
