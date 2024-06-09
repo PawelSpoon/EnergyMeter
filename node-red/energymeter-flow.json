@@ -227,7 +227,8 @@
         "y": 460,
         "wires": [
             [
-                "3c6e1303e6d1e4f6"
+                "3c6e1303e6d1e4f6",
+                "3c4299b0ba81b943"
             ]
         ]
     },
@@ -342,8 +343,7 @@
         "y": 580,
         "wires": [
             [
-                "bb3f6931b6c6db3b",
-                "3c4299b0ba81b943"
+                "bb3f6931b6c6db3b"
             ]
         ]
     },
@@ -427,6 +427,137 @@
         "bucket": "bucket",
         "x": 630,
         "y": 640,
+        "wires": []
+    },
+    {
+        "id": "396375faacdc1121",
+        "type": "mqtt in",
+        "z": "821ed147.a04a9",
+        "name": "inverter-hms-1800",
+        "topic": "inverter2/ac/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "18f74338210a8997",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 720,
+        "wires": [
+            [
+                "3ac35c9b67874ec3"
+            ]
+        ]
+    },
+    {
+        "id": "3ac35c9b67874ec3",
+        "type": "function",
+        "z": "821ed147.a04a9",
+        "name": "extract hm-1800 total values",
+        "func": "if (msg.topic.split(\"/\")[1] === \"ac\") {\n    if (msg.topic.split(\"/\")[2] === \"power\") {\n        msg.key = \"hms-1800_total_P_AC\"\n    } else if (msg.topic.split(\"/\")[2] === \"yieldtotal\") {\n        msg.key = \"hms-1800_total_YieldTotal\"\n    } else if (msg.topic.split(\"/\")[2] === \"yieldday\") {\n        msg.key = \"hms-1800_total_YieldDay\"\n    } else {\n        msg.key = \"hms-1800_total_\" + msg.topic.split(\"/\")[2]\n    }\n    msg.payload = Number(msg.payload)\n    return msg;\n}\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 760,
+        "wires": [
+            [
+                "430c72373206f5c7"
+            ]
+        ]
+    },
+    {
+        "id": "25237a7e64ea94c5",
+        "type": "debug",
+        "z": "821ed147.a04a9",
+        "name": "debug 8",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "430c72373206f5c7",
+        "type": "join",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "key",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "4",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 550,
+        "y": 800,
+        "wires": [
+            [
+                "5f928c182362a200"
+            ]
+        ]
+    },
+    {
+        "id": "5f928c182362a200",
+        "type": "change",
+        "z": "821ed147.a04a9",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Meter",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 800,
+        "wires": [
+            [
+                "25237a7e64ea94c5",
+                "5c9a924b35b7f98c"
+            ]
+        ]
+    },
+    {
+        "id": "5c9a924b35b7f98c",
+        "type": "influxdb out",
+        "z": "821ed147.a04a9",
+        "influxdb": "6ae25ec4e9f142ec",
+        "name": "pv",
+        "measurement": "pv",
+        "precision": "s",
+        "retentionPolicy": "two_years",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 950,
+        "y": 800,
         "wires": []
     },
     {

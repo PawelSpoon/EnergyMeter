@@ -12,7 +12,7 @@ select * from a, b fill(0) will not, cause result looks like
 
  time-stamp  |  a.col1  | a.col2 | a.col3 | b.col1 | b.col2 | b.col3
  1           |   1.5    |        |        |        |
- 2           |          |  2.3   |        | 
+ 2           |          |  2.3   |        |        |
  3           |   2.3    |  4.5   |        |
  4           |          |        |        |        |        |  4.5
  
@@ -30,9 +30,15 @@ in tenminwise it would not work due to the 'join' of two tables
 - collect data, keep it for few months
 - create hourly, daywise, month wise analysis, keep that data forever (incl. backup)
 
+# remarks
+- i thought i can use i ahoy dtu for all invertors, but no.
+- the total values are comming from ahoy-dtu and would reflect the summ of all inverters but now they do contain only the 1500 and not the 1800 series
+- consequently i would need to add the values of 1500 and 1800 in the db
+
 # the flow
 - shelly 3em sends data channelwise every few 100ms
-- ahoy dtu sends data as whole every 30 seconds, or less based on connection
+- ahoy dtu sends data as whole every 30 seconds, or less often based on connection
+- open dtu sends data as whole more often then ahoy
 - node-red combines shelly 3em into one message into: meter
 - mode-red store ahoy messages into: pv
 - merge pv and meter measurements into tenminwise
@@ -62,19 +68,19 @@ CREATE RETENTION POLICY ten_years ON home DURATION 3660d REPLICATION 1
 CREATE RETENTION POLICY two_years ON home DURATION 30d REPLICATION 1
 
 ## continous queries
-CREATE CONTINUOUS QUERY "tenminwise" ON "home" BEGIN SELECT mean("0_power") AS A , mean("1_power") AS B, mean("2_power") AS C,  mean("0_power") + mean("1_power") + mean("2_power") AS TOTAL, mean("total_P_AC") as PV_TOTAL, max(total_YieldDay) AS PV_YIELD_DAY, max("total_YieldTotal") AS PV_YIELD_TOTAL INTO "ten_years"."tenminwise" FROM "two_years"."meter", "two_years"."pv" GROUP BY time(10m) END
+CREATE CONTINUOUS QUERY "tenminwise" ON "home" BEGIN SELECT mean("0_power") AS A , mean("1_power") AS B, mean("2_power") AS C,  mean("0_power") + mean("1_power") + mean("2_power") AS TOTAL, mean("total_P_AC") as PV_TOTAL, max(total_YieldDay) AS PV_YIELD_DAY, max("total_YieldTotal") AS PV_YIELD_TOTAL, mean("hms-1800_total_P_AC") AS H18_TOTAL, max("hms-1800_total_YieldDay") AS H18_YIELD_DAY, max("hms-1800_total_YieldTotal")  AS H18_YIELD_TOTAL INTO "ten_years"."tenminwise" FROM "two_years"."meter", "two_years"."pv" GROUP BY time(10m) END
 
 ### the hourly value seems to be not that exact, when one compares the raw data with the mean
-CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B") AS B, mean("C") as C, mean("TOTAL") as TOTAL, mean("PV_TOTAL") AS PV_TOTAL, mean("TOTAL") - mean("PV_TOTAL") AS DIFF, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."hourly" FROM "ten_years"."tenminwise" GROUP BY time(1h) fill(0) END
+CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B") AS B, mean("C") as C, mean("TOTAL") as TOTAL, mean("PV_TOTAL") AS PV_TOTAL, mean("H18_TOTAL") AS H18_TOTAL, mean("TOTAL") - mean("PV_TOTAL") - mean("H18_TOTAL") AS DIFF, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL, max(H18_YIELD_DAY) AS H18_YIELD_DAY, max(H18_YIELD_TOTAL) AS H18_YIELD_TOTAL INTO "ten_years"."hourly" FROM "ten_years"."tenminwise" GROUP BY time(1h) fill(0) END
 
 The DIFF value is obviously a nonsense, TOTAL contains already the produced energy and can even become negative
-Without DIFF: 
+Without DIFF: (should i use rather this ?) 
 
-CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B") AS B, mean("C") as C, mean("TOTAL") as TOTAL, mean("PV_TOTAL") AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."hourly" FROM "ten_years"."tenminwise" GROUP BY time(1h) fill(0) END
+CREATE CONTINUOUS QUERY "hourly" ON "home" BEGIN SELECT mean("A") as A, mean("B") AS B, mean("C") as C, mean("TOTAL") as TOTAL, mean("PV_TOTAL") AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL, max(H18_YIELD_DAY) AS H18_YIELD_DAY, max(H18_YIELD_TOTAL) AS H18_YIELD_TOTAL INTO "ten_years"."hourly" FROM "ten_years"."tenminwise" GROUP BY time(1h) fill(0) END
 
 
 ### daily has already to integrate ! 
-CREATE CONTINUOUS QUERY "daily" ON "home" BEGIN SELECT integral("TOTAL")/3600 AS TOTAL, integral("PV_TOTAL")/3600 AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL INTO "ten_years"."daily" FROM "ten_years"."tenminwise" GROUP BY time(1d) END
+CREATE CONTINUOUS QUERY "daily" ON "home" BEGIN SELECT integral("TOTAL")/3600 AS TOTAL, integral("PV_TOTAL")/3600 AS PV_TOTAL, max(PV_YIELD_DAY) AS PV_YIELD_DAY, max(PV_YIELD_TOTAL) AS PV_YIELD_TOTAL, max(H18_YIELD_DAY) AS H18_YIELD_DAY, max(H18_YIELD_TOTAL) AS H18_YIELD_TOTAL INTO "ten_years"."daily" FROM "ten_years"."tenminwise" GROUP BY time(1d) END
 
 ### weekly evaluation
 CREATE CONTINUOUS QUERY "weekly" ON "home" BEGIN SELECT mean(*) INTO "ten_years"."weekly" FROM "ten_years"."daily" GROUP BY time(1w) END
@@ -88,5 +94,5 @@ with days it will not split properly into months, nor weeks .. hmm
 CREATE CONTINUOUS QUERY "monthly" ON "home" BEGIN SELECT * INTO "ten_years"."monthly" FROM "ten_years"."daily" GROUP BY time(30d) END
 
 # remarks
-- continuous queries will only run on future values, but you can run the inner select for already exxisting data. it was perfectly save for me to e.g. drop measurement tenminwise, then run select, then create continuous query. as long as you do not drop pv or meter, all should be fine
+- continuous queries will only run on future values, but you can run the inner select for already existing data. it was perfectly save for me to e.g. drop measurement tenminwise, then run select, then create continuous query. as long as you do not pv or meter, all should be fine
 
